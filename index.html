@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content=
+        "width=device-width, initial-scale=1.0">
+  
+    <link rel="stylesheet" href=
+"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity=
+"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  
+    <script>
+        function deleteDone(){
+            console.log("Delete Done");
+        }
+
+        function todoDelete(id){
+            console.log(id);
+            fetch("http://localhost:3000/todos/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(deleteDone);
+        }
+
+        function todosCallback(data) {
+            var parentElement = document.getElementById("mainArea");
+            parentElement.innerHTML = "";
+            for (var i = 0; i < data.length; i++) {
+                var todo = data[i];
+                var todoElement = document.createElement("div");
+
+                var todoElement1 = document.createElement("span");
+                todoElement1.innerHTML = todo.title;
+
+                var space= " ";
+
+                var todoElement2 = document.createElement("span");
+                todoElement2.innerHTML = todo.description;
+
+                var todoElement3 = document.createElement("button");
+                todoElement3.innerHTML = "Delete";
+                todoElement3.setAttribute("onclick","todoDelete("+ data[i].id+")");
+
+
+                todoElement.appendChild(todoElement1);
+                todoElement.appendChild(todoElement2);
+                todoElement.appendChild(todoElement3);
+
+                parentElement.appendChild(todoElement);
+            }
+        }       
+
+        function getDataCallback(resp) {
+            resp.json().then(todosCallback);
+        }
+
+        function getData() {
+            fetch("http://localhost:3000/todos").then(getDataCallback);
+        }
+
+        getData();
+
+
+        function parsedResponce(data) {
+            console.log(data);
+                var todo = data;
+                var todoElement = document.createElement("div");
+
+                var todoElement1 = document.createElement("span");
+                todoElement1.innerHTML = todo.title;
+
+                var todoElement2 = document.createElement("span");
+                todoElement2.innerHTML = todo.description;
+
+                var todoElement3 = document.createElement("button");
+                todoElement3.innerHTML = "Delete";
+
+                todoElement.appendChild(todoElement1);
+                todoElement.appendChild(todoElement2);
+                todoElement.appendChild(todoElement3);
+                
+                parentElement.appendChild(todoElement);
+        }
+
+        function callback(resp) {
+            resp.json().then(parsedResponce);
+        }
+
+        function onPress() {
+            var title = document.getElementById("title").value;
+            var description = document.getElementById("description").value;
+            var data = { title: title, description: description };
+            fetch("http://localhost:3000/todos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            }).then(callback);
+        }
+    </script>
+  
+    <title>To Do List</title>
+</head>
+
+<title>Todo App</title>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        text-align: center;
+    }
+
+    #todo-form {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        width: 300px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        color: #007bff;
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    #mainArea {
+        text-align: left;
+        margin-top: 20px;
+    }
+</style>
+
+</head>
+
+<body>
+    <div id="todo-form">
+        <h1>Todo App</h1>
+        <label for="title">Todo Title:</label>
+        <input type="text" id="title" placeholder="Enter Title" />
+
+        <label for="description">Todo Description:</label>
+        <input type="text" id="description" placeholder="Enter Description" />
+
+        <button onclick="onPress()">Send Todo</button>
+
+        <div id="mainArea">
+            <!-- Todo items will be displayed here -->
+        </div>
+    </div>
+
+</body>
+  
+</html>
